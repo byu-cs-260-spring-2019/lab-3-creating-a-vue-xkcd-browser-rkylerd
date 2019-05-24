@@ -2,7 +2,7 @@
 <html>
 
 <head>
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="./styles.css" />
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
   <title>XKCD Browser</title>
 </head>
@@ -10,10 +10,62 @@
 <body>
   <h1>XKCD Browser</h1>
   <div id="app">
+    <div v-if="loading">
+      <p>Loading...</p>
+    </div>
+    <div v-else>
+        
+      <h2>{{current.safe_title}}</h2>
+      <img v-bind:src="current.img" v-bind:alt="current.alt">
+      <p>{{current.alt}}</p>
+      <p><em>#{{current.num}}, drawn on {{current.day}} {{month}} {{current.year}}</em></p>
+      
+      <hr>
+
+      <p>
+          <button @click="firstComic">First Comic</button>
+          <button v-on:click="previousComic">Previous</button>
+          <button v-on:click="randomComic">Random</button>
+          <button v-on:click="nextComic">Next</button>
+          <button @click="lastComic">Last Comic</button>
+        </p>
+      <!-- <star-rating @rating-selected="rating = $event" :increment="0.5" :rating="rating"></star-rating> -->
+      <star-rating v-if="ratings[current.num]" active-color="#FF0000" @rating-selected ="setRating" :increment="0.5" :rating=ratings[current.num].review :show-rating=false></star-rating>
+      <star-rating v-else active-color="#FF0000" @rating-selected ="setRating" :increment="0.5" :rating=0 :show-rating=false></star-rating>
+      <p>  
+        <div v-if="ratings[current.num]">Average Rating: {{ratings[current.num].avg }} ({{ratings[current.num].total}})</div>
+        <div v-else>Be the first to rate comic <em>#{{current.num}}</em></div>
+         <br></p>
+      
+      <h3>Add a Comment</h3>
+      <form v-on:submit.prevent="addComment">
+        <input v-model="addedName" placeholder="Name"></p>
+        <textarea v-model="addedComment"></textarea>
+        <br />
+        <button type="submit">Comment</button>
+      </form>
+      <h3>Comments</h3>
+      <div v-for="comment in comments[number]">
+        <hr>
+        <p>{{comment.time}}</p>
+        <p>{{comment.text}}</p>
+        <p><i>-- {{comment.author}}</i></p>
+      </div>
+    </div>
+
   </div>
+  <section id="footer">
+    <a style="margin: auto" href="https://github.com/byu-cs-260-spring-2019/lab-3-creating-a-vue-xkcd-browser-rkylerd" target="_blank">
+      <img style="width: 15%; min-width: 100px;" src="http://icons.iconarchive.com/icons/artcore-illustrations/artcore-4/512/github-icon.png" alt="Github Spider Web Photo">
+    </a>
+  </section>
+  
+
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.2/dist/vue.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <script src="/script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js"></script>
+  <script src="https://unpkg.com/vue-star-rating/dist/star-rating.min.js"></script>
+  <script src="./script.js"></script>
 </body>
 
 </html>
